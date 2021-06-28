@@ -5,7 +5,7 @@ variable "location" {
 
 variable "prefix" {
   type    = string
-  default = "prefix"
+  default = "scorp"
 }
 
 variable "env_short" {
