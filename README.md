@@ -1,6 +1,6 @@
-# terraform-infrastructure-template
+# PagoPA site-corporate-infrastructure
 
-Terraform template repository for infrastructures projects
+PagoPA corporate cite project infrastructure
 
 ## Requirements
 
@@ -31,11 +31,11 @@ As PagoPA we build our standard Terraform modules, check available modules:
 To apply changes follow the standard terraform lifecycle once the code in this repository has been changed:
 
 ```sh
-terraform init
+terraform.sh init [uat|prod]
 
-terraform plan
+terraform.sh plan [uat|prod]
 
-terraform apply
+terraform.sh apply [uat|prod]
 ```
 
 ## Terraform lock.hcl
