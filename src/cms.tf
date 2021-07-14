@@ -87,7 +87,7 @@ module "portal_backend" {
 
   always_on = "true"
 
-  allowed_subnets = [module.subnet_wp.id, module.subnet_db.id, module.subnet_public.id]
+  allowed_subnets = [module.subnet_wp.id, module.subnet_db.id]
   allowed_ips     = ["0.0.0.0/0"]
 
   subnet_name = module.subnet_wp.name
