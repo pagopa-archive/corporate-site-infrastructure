@@ -1,6 +1,6 @@
 
 
-resource "azurerm_storage_account" "storage_account" {
+resource "azurerm_storage_account" "this" {
   name                      = var.name
   resource_group_name       = var.resource_group_name
   location                  = var.location
@@ -110,4 +110,3 @@ resource "azurerm_management_lock" "management_lock" {
   lock_level = var.lock_level
   notes      = var.lock_notes
 }
-
