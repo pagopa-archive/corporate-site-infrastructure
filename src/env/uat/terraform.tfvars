@@ -1,8 +1,22 @@
 env_short = "u"
+env_long  = "staging"
+prefix    = "sitecorp"
 tags = {
   CreatedBy   = "Terraform"
-  Environment = "Uat"
+  Environment = "UAT"
   Owner       = "site-corporate"
   Source      = "https://github.com/pagopa/corporate-site-infrastructure"
-  CostCenter  = "TS310 - PAGAMENTI & SERVIZI"
+  CostCenter  = ""
 }
+public_hostname            = "https://sitecorp-u-portal-backend.azurewebsites.net"
+db_sku_name                = "B_Gen5_2"
+db_version                 = "5.7"
+db_storage_mb              = "5120"
+db_collation               = "utf8_unicode_ci"
+db_ssl_enforcement_enabled = true
+database_name              = "ppawp"
+cidr_vnet                  = ["10.0.0.0/16"]
+cidr_subnet_db             = ["10.0.1.0/24"]
+cidr_subnet                = ["10.0.2.0/24"]
+cidr_subnet_public         = ["10.0.3.0/24"]
+cidr_subnet_wp             = ["10.0.4.0/24"]
