@@ -63,10 +63,10 @@ resource "azurerm_mysql_database" "mysql_database" {
 #   resource_group_name = azurerm_resource_group.rg_db.name
 #   subnet_id           = module.subnet_db.id
 
-#   # private_dns_zone_group {
-#   #   name                 = format("%s-db-private-dns-zone-group", local.project)
-#   #   private_dns_zone_ids = [azurerm_private_dns_zone.private_dns_zone_postgres.id]
-#   # }
+#   private_dns_zone_group {
+#     name                 = format("%s-db-private-dns-zone-group", local.project)
+#     private_dns_zone_ids = [azurerm_private_dns_zone.private_dns_zone_mysql.id]
+#   }
 
 #   private_service_connection {
 #     name                           = format("%s-db-private-service-connection", local.project)
@@ -76,10 +76,10 @@ resource "azurerm_mysql_database" "mysql_database" {
 #   }
 # }
 
-# resource "azurerm_private_dns_a_record" "private_dns_a_record_postgresql" {
-#   name                = "postgresql"
-#   zone_name           = azurerm_private_dns_zone.private_dns_zone_postgres.name
+# resource "azurerm_private_dns_a_record" "private_dns_a_record_mysql" {
+#   name                = "mysql"
+#   zone_name           = azurerm_private_dns_zone.private_dns_zone_mysql.name
 #   resource_group_name = azurerm_resource_group.rg_vnet.name
 #   ttl                 = 300
-#   records             = azurerm_private_endpoint.postgresql_private_endpoint.private_service_connection.*.private_ip_address
+#   records             = azurerm_private_endpoint.mysql_private_endpoint.private_service_connection.*.private_ip_address
 # }

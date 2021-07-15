@@ -59,7 +59,7 @@ resource "azurerm_storage_account" "this" {
 
 # Enable advanced threat protection
 resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
-  target_resource_id = azurerm_storage_account.storage_account.id
+  target_resource_id = azurerm_storage_account.this.id
   enabled            = true
 }
 
@@ -69,12 +69,12 @@ resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
 # https://github.com/terraform-providers/terraform-provider-azurerm/issues/8268
 
 resource "azurerm_template_deployment" "versioning" {
-  depends_on          = [azurerm_storage_account.storage_account]
+  depends_on          = [azurerm_storage_account.this]
   name                = var.versioning_name
   resource_group_name = var.resource_group_name
   deployment_mode     = "Incremental"
   parameters = {
-    "storageAccount" = azurerm_storage_account.storage_account.name
+    "storageAccount" = azurerm_storage_account.this.name
   }
 
   template_body = <<DEPLOY

@@ -6,7 +6,7 @@ tags = {
   Environment = "UAT"
   Owner       = "site-corporate"
   Source      = "https://github.com/pagopa/corporate-site-infrastructure"
-  CostCenter  = ""
+  CostCenter  = "TS300 - PRODOTTI E SERVIZI"
 }
 public_hostname            = "https://sitecorp-u-portal-backend.azurewebsites.net"
 db_sku_name                = "B_Gen5_2"

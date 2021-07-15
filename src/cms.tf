@@ -33,7 +33,7 @@ resource "azurerm_role_assignment" "app_service_container_registry" {
 
 data "azurerm_key_vault_secret" "cms_db_password" {
   depends_on = [azurerm_key_vault_access_policy.terraform_cloud_policy]
-  
+
   name         = format("%s-cms-db-password", local.project)
   key_vault_id = module.key_vault.id
 }

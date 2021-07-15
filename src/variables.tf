@@ -139,9 +139,6 @@ variable "db_collation" {
 #   }))
 # }
 
-
-
-
 ## Azure container registry
 variable "sku_container_registry" {
   type    = string
@@ -240,4 +237,26 @@ variable "law_daily_quota_gb" {
   type        = number
   description = "The workspace daily quota for ingestion in GB."
   default     = -1
+}
+
+# App Gateway
+variable "app_gateway_min_capacity" {
+  type    = number
+  default = 1
+}
+variable "app_gateway_max_capacity" {
+  type    = number
+  default = 2
+}
+
+variable "app_gateway_host_name" {
+  type        = string
+  description = "Application gateway host name"
+  default     = "ppacms.justbit.it"
+}
+
+variable "app_gateway_certificate_name" {
+  type        = string
+  description = "Application gateway certificate name on Key Vault"
+  default     = null
 }
