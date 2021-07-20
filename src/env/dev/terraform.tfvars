@@ -23,4 +23,5 @@ cidr_subnet                = ["10.0.2.0/24"]
 cidr_subnet_public         = ["10.0.3.0/24"]
 cidr_subnet_wp             = ["10.0.4.0/24"]
 cidr_subnet_azdoa          = ["10.0.5.0/24"]
-# cms_domain_verification_id = "cms_domain_verification_id"
+dns_zone_prefix            = "uat.sitecorporate"
+external_domain            = "pagopa.it"

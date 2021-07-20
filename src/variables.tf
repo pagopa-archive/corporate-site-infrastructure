@@ -259,6 +259,11 @@ variable "enable_azdoa" {
   default     = false
 }
 
+variable "cidr_subnet_azdoa" {
+  type        = list(string)
+  description = "Azure DevOps agent network address space."
+}
+
 ## Public DNS Zone ##
 variable "dns_zone_prefix" {
   type        = string
@@ -276,9 +281,4 @@ variable "dns_default_ttl_sec" {
   type        = number
   description = "value"
   default     = 3600
-}
-
-variable "cidr_subnet_azdoa" {
-  type        = list(string)
-  description = "Azure DevOps agent network address space."
 }
