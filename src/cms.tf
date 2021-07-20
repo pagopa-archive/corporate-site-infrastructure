@@ -38,8 +38,42 @@ data "azurerm_key_vault_secret" "cms_db_password" {
   key_vault_id = module.key_vault.id
 }
 
+resource "azurerm_dns_zone" "cms_dns_zone" {
+  name                = var.public_dns_zone
+  resource_group_name = azurerm_resource_group.rg_cms.name
+}
+
+resource "azurerm_dns_cname_record" "dns_cname_record_cms" {
+  depends_on          = [azurerm_dns_zone.cms_dns_zone]
+  name                = "cms"
+  zone_name           = azurerm_dns_zone.cms_dns_zone.name
+  resource_group_name = azurerm_resource_group.rg_cms.name
+  ttl                 = 300
+  record              = module.portal_backend.default_site_hostname
+}
+
+resource "azurerm_dns_txt_record" "dns_txt_record_cms_asuid" {
+  depends_on          = [azurerm_dns_zone.cms_dns_zone, module.portal_backend]
+  name                = "asuid.${azurerm_dns_cname_record.dns_cname_record_cms.name}"
+  zone_name           = azurerm_dns_zone.cms_dns_zone.name
+  resource_group_name = azurerm_dns_zone.cms_dns_zone.resource_group_name
+  ttl                 = 300
+  record {
+    value = module.portal_backend.custom_domain_verification_id
+  }
+}
+
+# resource "azurerm_app_service_custom_hostname_binding" "hostname_binding" {
+#   depends_on          = [azurerm_dns_cname_record.dns_cname_record_cms, azurerm_dns_txt_record.dns_txt_record_cms_asuid, module.portal_backend.name]
+#   hostname            = trim(azurerm_dns_cname_record.dns_cname_record_cms.fqdn, ".")
+#   app_service_name    = module.portal_backend.name
+#   resource_group_name = azurerm_resource_group.rg_cms.name
+#   # thumbprint          = var.custom_domain.certificate_thumbprint
+# }
+
+
 module "portal_backend" {
-  source = "git::https://github.com/pagopa/azurerm.git//app_service?ref=v1.0.33"
+  source = "git::https://github.com/pagopa/azurerm.git//app_service?ref=v1.0.38"
 
   name                = format("%s-portal-backend", local.project)
   plan_name           = format("%s-plan-portal-backend", local.project)
@@ -63,10 +97,10 @@ module "portal_backend" {
     WP_HOME     = var.public_hostname
     WP_SITEURL  = format("%s/wp", var.public_hostname)
 
-    MICROSOFT_AZURE_ACCOUNT_KEY            = module.storage_account.primary_access_key
-    MICROSOFT_AZURE_ACCOUNT_NAME           = module.storage_account.name
-    MICROSOFT_AZURE_CONTAINER              = "uploads"
-    MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD = true
+    DIS_MICROSOFT_AZURE_ACCOUNT_KEY            = module.storage_account.primary_access_key
+    DIS_MICROSOFT_AZURE_ACCOUNT_NAME           = module.storage_account.name
+    DIS_MICROSOFT_AZURE_CONTAINER              = "media"
+    DIS_MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD = true
 
     WEBSITE_HTTPLOGGING_RETENTION_DAYS = 7
 
@@ -80,15 +114,13 @@ module "portal_backend" {
 
   }
 
-  #linux_fx_version = format("DOCKER|%s/ccorp-site:%s", azurerm_container_registry.container_registry.login_server, "latest")
   linux_fx_version = "DOCKER|nginx"
-  #   linux_fx_version = format("DOCKER|ppareg.azurecr.io/corporate-site-backend:%s", "latest")
-  # linux_fx_version = "NODE|14-lts"
 
   always_on = "true"
 
   allowed_subnets = [module.subnet_wp.id, module.subnet_db.id]
-  allowed_ips     = ["0.0.0.0/0"]
+  # TODO Remove and add allowed_ips it to ignore list
+  allowed_ips = ["0.0.0.0/0"]
 
   subnet_name = module.subnet_wp.name
   subnet_id   = module.subnet_wp.id

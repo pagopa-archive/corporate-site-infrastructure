@@ -12,25 +12,39 @@ module "storage_account" {
   versioning_name = format("%s-sa-versioning", local.project)
   lock_name       = format("%s-sa-lock", local.project)
 
-  account_kind             = "StorageV2"
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
-  access_tier              = "Hot"
-  allow_blob_public_access = true
-  resource_group_name      = azurerm_resource_group.rg_storage.name
-  location                 = var.location
-  lock                     = var.storage_account_lock != null
-  lock_scope               = var.storage_account_lock != null ? var.storage_account_lock.scope : null
-  lock_level               = var.storage_account_lock != null ? var.storage_account_lock.lock_level : "CanNotDelete"
-  lock_notes               = var.storage_account_lock != null ? var.storage_account_lock.notes : null
+  # account_kind             = "BlockBlobStorage"
+  # account_tier             = "Premium"
+  # account_replication_type = "LRS"
+  account_kind              = "StorageV2"
+  account_tier              = "Standard"
+  account_replication_type  = "GRS"
+  access_tier               = "Hot"
+  allow_blob_public_access  = true
+  enable_https_traffic_only = true
+  is_hns_enabled            = false
+  nfsv3_enabled             = false
+
+  # network_rules = {
+  #     default_action = "Deny"
+  #     bypass         = ["None"]
+  #     virtual_network_subnet_ids = [module.subnet_wp.id]
+  #     ip_rules      = []
+  # }
+
+  resource_group_name = azurerm_resource_group.rg_storage.name
+  location            = var.location
+  lock                = var.storage_account_lock != null
+  lock_scope          = var.storage_account_lock != null ? var.storage_account_lock.scope : null
+  lock_level          = var.storage_account_lock != null ? var.storage_account_lock.lock_level : "CanNotDelete"
+  lock_notes          = var.storage_account_lock != null ? var.storage_account_lock.notes : null
 
   tags = var.tags
 }
 
 # Containers
-resource "azurerm_storage_container" "uploads" {
+resource "azurerm_storage_container" "media" {
   depends_on            = [module.storage_account]
-  name                  = "uploads"
+  name                  = "media"
   storage_account_name  = module.storage_account.name
   container_access_type = "blob"
 }
