@@ -8,7 +8,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.67.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.68.0 |
 
 ## Modules
 

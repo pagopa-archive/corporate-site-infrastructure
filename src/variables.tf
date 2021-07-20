@@ -260,3 +260,22 @@ variable "app_gateway_certificate_name" {
   description = "Application gateway certificate name on Key Vault"
   default     = null
 }
+
+## Public DNS Zone ##
+variable "dns_zone_prefix" {
+  type        = string
+  default     = null
+  description = "The dns subdomain."
+}
+
+variable "external_domain" {
+  type        = string
+  default     = null
+  description = "Domain for delegation"
+}
+
+variable "dns_default_ttl_sec" {
+  type        = number
+  description = "value"
+  default     = 3600
+}

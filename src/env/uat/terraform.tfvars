@@ -1,6 +1,6 @@
 env_short = "u"
 env_long  = "staging"
-prefix    = "sitecorp"
+prefix    = "scorp"
 tags = {
   CreatedBy   = "Terraform"
   Environment = "UAT"
@@ -20,3 +20,5 @@ cidr_subnet_db             = ["10.0.1.0/24"]
 cidr_subnet                = ["10.0.2.0/24"]
 cidr_subnet_public         = ["10.0.3.0/24"]
 cidr_subnet_wp             = ["10.0.4.0/24"]
+dns_zone_prefix            = "uat.sitecorporate"
+external_domain            = "pagopa.it"
