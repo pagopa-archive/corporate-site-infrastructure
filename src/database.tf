@@ -57,6 +57,44 @@ resource "azurerm_mysql_database" "mysql_database" {
   collation           = var.db_collation
 }
 
+resource "azurerm_private_dns_zone" "mysql_dns_zone" {
+  name                = var.private_dns_zone
+  resource_group_name = azurerm_resource_group.rg_db.name
+
+  tags = var.tags
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "mysql_dns_zone_virtual_link" {
+
+  name                  = format("%s-private-dns-zone-link", local.project)
+  resource_group_name   = azurerm_resource_group.rg_db.name
+  private_dns_zone_name = azurerm_private_dns_zone.mysql_dns_zone.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "mysql_private_endpoint" {
+  name                = format("%s-private-endpoint", local.project)
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_db.name
+  subnet_id           = module.subnet_db.id
+
+  private_dns_zone_group {
+    name                 = format("%s-private-dns-zone-group", local.project)
+    private_dns_zone_ids = [azurerm_private_dns_zone.mysql_dns_zone.id]
+  }
+
+  private_service_connection {
+    name                           = format("%s-private-service-connection", azurerm_mysql_server.mysql_server.name)
+    private_connection_resource_id = azurerm_mysql_server.mysql_server.id
+    is_manual_connection           = false
+    subresource_names              = ["mysqlServer"]
+  }
+
+  tags = var.tags
+}
+
 # resource "azurerm_private_endpoint" "mysql_private_endpoint" {
 #   name                = format("%s-db-private-endpoint", local.project)
 #   location            = azurerm_resource_group.rg_db.location
@@ -76,10 +114,10 @@ resource "azurerm_mysql_database" "mysql_database" {
 #   }
 # }
 
-# resource "azurerm_private_dns_a_record" "private_dns_a_record_mysql" {
-#   name                = "mysql"
-#   zone_name           = azurerm_private_dns_zone.private_dns_zone_mysql.name
-#   resource_group_name = azurerm_resource_group.rg_vnet.name
-#   ttl                 = 300
-#   records             = azurerm_private_endpoint.mysql_private_endpoint.private_service_connection.*.private_ip_address
-# }
+resource "azurerm_private_dns_a_record" "private_dns_a_record_mysql" {
+  name                = "mysql"
+  zone_name           = azurerm_private_dns_zone.mysql_dns_zone.name
+  resource_group_name = azurerm_resource_group.rg_db.name
+  ttl                 = 300
+  records             = azurerm_private_endpoint.mysql_private_endpoint.private_service_connection.*.private_ip_address
+}

@@ -81,6 +81,16 @@ module "subnet_public" {
   virtual_network_name = azurerm_virtual_network.vnet.name
 }
 
+module "azdoa_snet" {
+  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.3"
+  count                                          = var.enable_azdoa ? 1 : 0
+  name                                           = format("%s-azdoa-snet", local.project)
+  address_prefixes                               = var.cidr_subnet_azdoa
+  resource_group_name                            = azurerm_resource_group.rg_vnet.name
+  virtual_network_name                           = azurerm_virtual_network.vnet.name
+  enforce_private_link_endpoint_network_policies = true
+}
+
 # resource "azurerm_private_dns_zone" "cms_private_dns_zone" {
 #   name                = var.cms_private_domain
 #   resource_group_name = azurerm_resource_group.rg_vnet.name
@@ -93,21 +103,10 @@ module "subnet_public" {
 #   virtual_network_id    = azurerm_virtual_network.vnet.id
 # }
 
-# resource "azurerm_private_dns_a_record" "private_dns_a_record_cms" {
+# resource "azurerm_private_dns_cname_record" "private_dns_cname_record_cms" {
 #   name                = module.portal_backend.name
 #   zone_name           = azurerm_private_dns_zone.cms_private_dns_zone.name
 #   resource_group_name = azurerm_resource_group.rg_vnet.name
 #   ttl                 = 300
 #   records             = module.portal_backend.private_ip_addresses[0]
 # }
-
-resource "azurerm_public_ip" "cmsgateway_public_ip" {
-  name                = format("%s-cmsgateway-pip", local.project)
-  domain_name_label   = format("%s-cmsgateway", local.project)
-  resource_group_name = azurerm_virtual_network.vnet.resource_group_name
-  location            = azurerm_virtual_network.vnet.location
-  sku                 = "Standard"
-  allocation_method   = "Static"
-
-  tags = var.tags
-}

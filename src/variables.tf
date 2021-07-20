@@ -27,6 +27,14 @@ variable "public_hostname" {
   type = string
 }
 
+variable "public_dns_zone" {
+  type = string
+}
+
+variable "private_dns_zone" {
+  type = string
+}
+
 # mysql
 # variable "db_administrator_login" {
 #   type        = string
@@ -109,6 +117,11 @@ variable "db_collation" {
   default     = "utf8_unicode_ci"
 }
 
+# variable "cms_domain_verification_id" {
+#   type        = string
+#   description = "CMS App Service Custom Domain Verification ID"
+# }
+
 
 # variable "db_monitor_metric_alert_criteria" {
 #   default = {}
@@ -167,7 +180,7 @@ variable "backend_sku" {
   })
   default = {
     tier     = "Standard"
-    size     = "S1"
+    size     = "S2"
     capacity = 1
   }
 }
@@ -239,26 +252,11 @@ variable "law_daily_quota_gb" {
   default     = -1
 }
 
-# App Gateway
-variable "app_gateway_min_capacity" {
-  type    = number
-  default = 1
-}
-variable "app_gateway_max_capacity" {
-  type    = number
-  default = 2
-}
-
-variable "app_gateway_host_name" {
-  type        = string
-  description = "Application gateway host name"
-  default     = "ppacms.justbit.it"
-}
-
-variable "app_gateway_certificate_name" {
-  type        = string
-  description = "Application gateway certificate name on Key Vault"
-  default     = null
+# Azure DevOps Agent
+variable "enable_azdoa" {
+  type        = bool
+  description = "Enable Azure DevOps agent."
+  default     = false
 }
 
 ## Public DNS Zone ##
@@ -278,4 +276,9 @@ variable "dns_default_ttl_sec" {
   type        = number
   description = "value"
   default     = 3600
+}
+
+variable "cidr_subnet_azdoa" {
+  type        = list(string)
+  description = "Azure DevOps agent network address space."
 }

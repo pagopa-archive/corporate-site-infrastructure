@@ -8,9 +8,11 @@ resource "azurerm_storage_account" "this" {
   account_tier              = var.account_tier
   account_replication_type  = var.account_replication_type
   access_tier               = var.access_tier
-  enable_https_traffic_only = true
+  enable_https_traffic_only = var.enable_https_traffic_only
   min_tls_version           = "TLS1_2"
   allow_blob_public_access  = var.allow_blob_public_access
+  is_hns_enabled            = var.is_hns_enabled
+  nfsv3_enabled             = var.nfsv3_enabled
 
   dynamic "static_website" {
     for_each = var.enable_static_website ? [{}] : []

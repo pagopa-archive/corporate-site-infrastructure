@@ -36,7 +36,8 @@ variable "account_kind" {
 }
 
 variable "account_tier" {
-  type = string
+  type    = string
+  default = "Standard"
 }
 
 variable "account_replication_type" {
@@ -71,6 +72,23 @@ variable "allow_blob_public_access" {
   default     = false
 }
 
+variable "nfsv3_enabled" {
+  description = "Controls if NFSv3 to be enabled on the storage account. Possible values are `true` or `false`"
+  type        = bool
+  default     = false
+}
+
+variable "is_hns_enabled" {
+  description = "Controls if Hierarchical Namespace to be enabled on the storage account. Possible values are `true` or `false`"
+  type        = bool
+  default     = false
+}
+
+variable "enable_https_traffic_only" {
+  description = "Controls if HTTPSOnly to be enabled on the storage account. Possible values are `true` or `false`"
+  type        = bool
+  default     = true
+}
 
 # Note: If specifying network_rules, one of either ip_rules or virtual_network_subnet_ids must be specified
 # and default_action must be set to Deny.
