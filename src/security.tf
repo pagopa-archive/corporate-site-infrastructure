@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "sec_rg" {
 # Create Key Vault
 module "key_vault" {
   source              = "git::https://github.com/pagopa/azurerm.git//key_vault?ref=v1.0.33"
-  name                = format("%s-kv", local.project)
+  name                = format("%s-kv-common", local.project)
   location            = azurerm_resource_group.sec_rg.location
   resource_group_name = azurerm_resource_group.sec_rg.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
@@ -19,25 +19,6 @@ module "key_vault" {
 #
 # POLICIES
 #
-
-# resource "azurerm_key_vault_access_policy" "terraform_policy" {
-#   key_vault_id = module.key_vault.id
-#   tenant_id    = data.azurerm_client_config.current.tenant_id
-#   object_id    = data.azurerm_client_config.current.object_id
-
-#   key_permissions = ["Get", "List", "Update", "Create", "Import", "Delete",
-#     "Recover", "Backup", "Restore"
-#   ]
-#   secret_permissions = ["Get", "List", "Set", "Delete", "Recover", "Backup",
-#     "Restore"
-#   ]
-#   certificate_permissions = ["Get", "List", "Update", "Create", "Import",
-#     "Delete", "Recover", "Backup", "Restore", "ManageContacts", "ManageIssuers",
-#     "GetIssuers", "ListIssuers", "SetIssuers", "DeleteIssuers", "Purge"
-#   ]
-
-#   storage_permissions = []
-# }
 
 data "azuread_group" "adgroup_admin" {
   display_name = format("%s-adgroup-admin", local.ad_group_prefix)
