@@ -6,13 +6,11 @@ resource "azurerm_resource_group" "rg_db" {
 }
 
 data "azurerm_key_vault_secret" "db_administrator_login" {
-  depends_on   = [azurerm_key_vault_access_policy.terraform_cloud_policy]
   name         = "db-administrator-login"
   key_vault_id = module.key_vault.id
 }
 
 data "azurerm_key_vault_secret" "db_administrator_login_password" {
-  depends_on   = [azurerm_key_vault_access_policy.terraform_cloud_policy]
   name         = "db-admin-login-password"
   key_vault_id = module.key_vault.id
 }

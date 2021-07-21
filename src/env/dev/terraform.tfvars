@@ -1,6 +1,7 @@
-env_short = "d"
-env_long  = "development"
-prefix    = "ppacorpsite"
+env_short       = "d"
+env_long        = "development"
+prefix          = "ppacorpsite"
+ad_group_prefix = "sitecorporate"
 tags = {
   CreatedBy   = "Terraform"
   Environment = "Dev"
@@ -9,8 +10,9 @@ tags = {
   CostCenter  = ""
 }
 public_hostname            = "https://ppacorpsite-d-portal-backend.azurewebsites.net"
+dns_zone_prefix            = "dev.ppascorp"
+external_domain            = "justbit.it"
 private_dns_zone           = "dev.ppascorp-private.justbit.it"
-public_dns_zone            = "dev.ppascorp.justbit.it"
 db_sku_name                = "GP_Gen5_4"
 db_version                 = "5.7"
 db_storage_mb              = "5120"
@@ -23,5 +25,3 @@ cidr_subnet                = ["10.0.2.0/24"]
 cidr_subnet_public         = ["10.0.3.0/24"]
 cidr_subnet_wp             = ["10.0.4.0/24"]
 cidr_subnet_azdoa          = ["10.0.5.0/24"]
-dns_zone_prefix            = "uat.sitecorporate"
-external_domain            = "pagopa.it"

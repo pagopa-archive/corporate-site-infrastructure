@@ -8,6 +8,11 @@ variable "prefix" {
   default = "scorp"
 }
 
+variable "ad_group_prefix" {
+  type    = string
+  default = "sitecorporate"
+}
+
 variable "env_short" {
   type = string
 }
@@ -24,10 +29,6 @@ variable "tags" {
 }
 
 variable "public_hostname" {
-  type = string
-}
-
-variable "public_dns_zone" {
   type = string
 }
 
@@ -281,4 +282,12 @@ variable "dns_default_ttl_sec" {
   type        = number
   description = "value"
   default     = 3600
+}
+
+# key vault
+
+variable "devops_service_connection_object_id" {
+  type        = string
+  description = "Azure deveops service connection id."
+  default     = null
 }
