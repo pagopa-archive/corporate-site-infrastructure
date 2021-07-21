@@ -45,7 +45,10 @@ data "azurerm_key_vault_secret" "cms_db_password" {
 # }
 
 module "portal_backend" {
-  source = "git::https://github.com/pagopa/azurerm.git//app_service?ref=v1.0.38"
+  # depends_on = [azurerm_key_vault_access_policy.terraform_policy]
+  #, azurerm_key_vault_access_policy.adgroup_admin_policy, azurerm_key_vault_access_policy.adgroup_contributors_policy]
+  # source = "git::https://github.com/pagopa/azurerm.git//app_service?ref=v1.0.38"
+  source = "./modules/app_service"
 
   name                = format("%s-portal-backend", local.project)
   plan_name           = format("%s-plan-portal-backend", local.project)
@@ -59,6 +62,14 @@ module "portal_backend" {
 
   health_check_path = "/"
 
+  # storage_account = {
+  #   name             = module.storage_account.name
+  #   account_name     = module.storage_account.name
+  #   share_name       = "assets"
+  #   access_key       = module.storage_account.primary_access_key
+  #   mount_path       = "/var/www/html/web/app/uploads"
+  # }
+
   app_settings = {
 
     DB_NAME     = var.database_name
@@ -69,10 +80,10 @@ module "portal_backend" {
     WP_HOME     = var.public_hostname
     WP_SITEURL  = format("%s/wp", var.public_hostname)
 
-    DIS_MICROSOFT_AZURE_ACCOUNT_KEY            = module.storage_account.primary_access_key
-    DIS_MICROSOFT_AZURE_ACCOUNT_NAME           = module.storage_account.name
-    DIS_MICROSOFT_AZURE_CONTAINER              = "media"
-    DIS_MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD = true
+    MICROSOFT_AZURE_ACCOUNT_KEY            = module.storage_account.primary_access_key
+    MICROSOFT_AZURE_ACCOUNT_NAME           = module.storage_account.name
+    MICROSOFT_AZURE_CONTAINER              = "media"
+    MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD = true
 
     WEBSITE_HTTPLOGGING_RETENTION_DAYS = 7
 

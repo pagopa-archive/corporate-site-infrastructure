@@ -103,7 +103,6 @@ variable "network_rules" {
   default = null
 }
 
-
 variable "enable_versioning" {
   type        = bool
   description = "Enable versioning in the blob storage account."

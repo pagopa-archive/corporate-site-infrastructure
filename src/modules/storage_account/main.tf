@@ -1,13 +1,16 @@
 
 
 resource "azurerm_storage_account" "this" {
-  name                      = var.name
-  resource_group_name       = var.resource_group_name
-  location                  = var.location
-  account_kind              = var.account_kind
-  account_tier              = var.account_tier
-  account_replication_type  = var.account_replication_type
-  access_tier               = var.access_tier
+  name                     = var.name
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  account_kind             = var.account_kind
+  account_tier             = var.account_tier
+  account_replication_type = var.account_replication_type
+  access_tier              = var.access_tier
+
+  #tfsec:ignore:AZU014
+  #tfsec:ignore:AZU010
   enable_https_traffic_only = var.enable_https_traffic_only
   min_tls_version           = "TLS1_2"
   allow_blob_public_access  = var.allow_blob_public_access
@@ -49,7 +52,8 @@ resource "azurerm_storage_account" "this" {
     for_each = var.network_rules == null ? [] : [var.network_rules]
 
     content {
-      default_action             = length(network_rules.value["ip_rules"]) == 0 && length(network_rules.value["virtual_network_subnet_ids"]) == 0 ? network_rules.value["default_action"] : "Deny"
+      default_action = length(network_rules.value["ip_rules"]) == 0 && length(network_rules.value["virtual_network_subnet_ids"]) == 0 ? network_rules.value["default_action"] : "Deny"
+      #tfsec:ignore:AZU013
       bypass                     = network_rules.value["bypass"]
       ip_rules                   = network_rules.value["ip_rules"]
       virtual_network_subnet_ids = network_rules.value["virtual_network_subnet_ids"]
