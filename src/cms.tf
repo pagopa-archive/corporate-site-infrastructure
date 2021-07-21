@@ -32,35 +32,8 @@ resource "azurerm_role_assignment" "app_service_container_registry" {
 }
 
 data "azurerm_key_vault_secret" "cms_db_password" {
-  depends_on = [azurerm_key_vault_access_policy.terraform_cloud_policy]
-
   name         = format("%s-cms-db-password", local.project)
   key_vault_id = module.key_vault.id
-}
-
-resource "azurerm_dns_zone" "cms_dns_zone" {
-  name                = var.public_dns_zone
-  resource_group_name = azurerm_resource_group.rg_cms.name
-}
-
-resource "azurerm_dns_cname_record" "dns_cname_record_cms" {
-  depends_on          = [azurerm_dns_zone.cms_dns_zone]
-  name                = "cms"
-  zone_name           = azurerm_dns_zone.cms_dns_zone.name
-  resource_group_name = azurerm_resource_group.rg_cms.name
-  ttl                 = 300
-  record              = module.portal_backend.default_site_hostname
-}
-
-resource "azurerm_dns_txt_record" "dns_txt_record_cms_asuid" {
-  depends_on          = [azurerm_dns_zone.cms_dns_zone, module.portal_backend]
-  name                = "asuid.${azurerm_dns_cname_record.dns_cname_record_cms.name}"
-  zone_name           = azurerm_dns_zone.cms_dns_zone.name
-  resource_group_name = azurerm_dns_zone.cms_dns_zone.resource_group_name
-  ttl                 = 300
-  record {
-    value = module.portal_backend.custom_domain_verification_id
-  }
 }
 
 # resource "azurerm_app_service_custom_hostname_binding" "hostname_binding" {
@@ -70,7 +43,6 @@ resource "azurerm_dns_txt_record" "dns_txt_record_cms_asuid" {
 #   resource_group_name = azurerm_resource_group.rg_cms.name
 #   # thumbprint          = var.custom_domain.certificate_thumbprint
 # }
-
 
 module "portal_backend" {
   source = "git::https://github.com/pagopa/azurerm.git//app_service?ref=v1.0.38"

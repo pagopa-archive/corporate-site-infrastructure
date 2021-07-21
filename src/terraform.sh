@@ -20,9 +20,15 @@ fi
 source "./env/$env/backend.ini"
 az account set -s "${subscription}"
 
-if echo "init plan apply refresh" | grep -w $action > /dev/null; then
+# init terraform backend
+terraform init -reconfigure \
+    -backend-config="./env/$env/backend.tfvars"
+
+if echo "init plan apply refresh import output state taint destroy" | grep -w $action > /dev/null; then
   if [ $action = "init" ]; then
     terraform $action -backend-config="./env/$env/backend.tfvars" $other
+  elif [ $action = "output" ] || [ $action = "state" ] || [ $action = "taint" ]; then
+    terraform $action $other
   else
     terraform $action -var-file="./env/$env/terraform.tfvars" $other
   fi
