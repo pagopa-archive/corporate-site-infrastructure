@@ -30,11 +30,12 @@ resource "azurerm_app_service" "this" {
   app_settings = var.app_settings
 
   site_config {
-    always_on        = var.always_on
-    linux_fx_version = var.linux_fx_version
-    app_command_line = var.app_command_line
-    min_tls_version  = "1.2"
-    ftps_state       = "Disabled"
+    always_on          = var.always_on
+    linux_fx_version   = var.linux_fx_version
+    windows_fx_version = var.windows_fx_version
+    app_command_line   = var.app_command_line
+    min_tls_version    = "1.2"
+    ftps_state         = "Disabled"
 
     health_check_path = var.health_check_path != null ? var.health_check_path : null
 
@@ -82,6 +83,7 @@ resource "azurerm_app_service" "this" {
     ignore_changes = [
       site_config.0.scm_type,
       site_config.0.linux_fx_version, # deployments are made outside of Terraform
+      #   site_config.0.windows_fx_version, # deployments are made outside of Terraform
       app_settings["DOCKER_CUSTOM_IMAGE_NAME"]
     ]
   }

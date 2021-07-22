@@ -12,7 +12,6 @@ tags = {
 public_hostname                     = "https://scorp-u-portal-backend.azurewebsites.net"
 dns_zone_prefix                     = "uat.sitecorporate"
 external_domain                     = "pagopa.it"
-private_dns_zone                    = "uat.sitecorporate-private.pagopa.it"
 db_sku_name                         = "GP_Gen5_4"
 db_version                          = "5.7"
 db_storage_mb                       = "5120"

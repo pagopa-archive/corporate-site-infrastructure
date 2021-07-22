@@ -33,7 +33,8 @@ variable "public_hostname" {
 }
 
 variable "private_dns_zone" {
-  type = string
+  type    = string
+  default = "privatelink.mysql.database.azure.com"
 }
 
 # mysql

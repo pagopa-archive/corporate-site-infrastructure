@@ -31,10 +31,10 @@ resource "azurerm_role_assignment" "app_service_container_registry" {
   skip_service_principal_aad_check = true
 }
 
-data "azurerm_key_vault_secret" "cms_db_password" {
-  name         = format("%s-cms-db-password", local.project)
-  key_vault_id = module.key_vault.id
-}
+# data "azurerm_key_vault_secret" "cms_db_password" {
+#   name         = format("%s-cms-db-password", local.project)
+#   key_vault_id = module.key_vault.id
+# }
 
 # resource "azurerm_app_service_custom_hostname_binding" "hostname_binding" {
 #   depends_on          = [azurerm_dns_cname_record.dns_cname_record_cms, azurerm_dns_txt_record.dns_txt_record_cms_asuid, module.portal_backend.name]
@@ -62,20 +62,20 @@ module "portal_backend" {
 
   health_check_path = "/"
 
-  # storage_account = {
-  #   name             = module.storage_account.name
-  #   account_name     = module.storage_account.name
-  #   share_name       = "assets"
-  #   access_key       = module.storage_account.primary_access_key
-  #   mount_path       = "/var/www/html/web/app/uploads"
-  # }
+  storage_account = {
+    name         = module.storage_account.name
+    account_name = module.storage_account.name
+    share_name   = "assets"
+    access_key   = module.storage_account.primary_access_key
+    mount_path   = "/var/www/html/web/app/uploads"
+  }
 
   app_settings = {
 
     DB_NAME     = var.database_name
     DB_USER     = data.azurerm_key_vault_secret.db_administrator_login.value          #format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.name)
     DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value #var.db_administrator_login_password
-    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn
+    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn                              #trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".")#
     WP_ENV      = var.env_long
     WP_HOME     = var.public_hostname
     WP_SITEURL  = format("%s/wp", var.public_hostname)
@@ -85,11 +85,16 @@ module "portal_backend" {
     MICROSOFT_AZURE_CONTAINER              = "media"
     MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD = true
 
-    WEBSITE_HTTPLOGGING_RETENTION_DAYS = 7
+    WEBSITE_HTTPLOGGING_RETENTION_DAYS  = 7
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
 
     DOCKER_REGISTRY_SERVER_URL      = "https://${azurerm_container_registry.container_registry.login_server}"
     DOCKER_REGISTRY_SERVER_USERNAME = azurerm_container_registry.container_registry.admin_username
     DOCKER_REGISTRY_SERVER_PASSWORD = azurerm_container_registry.container_registry.admin_password
+
+    # DNS configuration to use private endpoint
+    WEBSITE_DNS_SERVER     = "168.63.129.16"
+    WEBSITE_VNET_ROUTE_ALL = 1
 
     # # application insights
     # APPLICATIONINSIGHTS_CONNECTION_STRING = format("InstrumentationKey=%s",

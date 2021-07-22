@@ -12,7 +12,6 @@ tags = {
 public_hostname            = "https://ppacorpsite-d-portal-backend.azurewebsites.net"
 dns_zone_prefix            = "dev.ppascorp"
 external_domain            = "justbit.it"
-private_dns_zone           = "dev.ppascorp-private.justbit.it"
 db_sku_name                = "GP_Gen5_4"
 db_version                 = "5.7"
 db_storage_mb              = "5120"

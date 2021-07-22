@@ -85,6 +85,12 @@ variable "linux_fx_version" {
   default     = null
 }
 
+variable "windows_fx_version" {
+  type        = string
+  description = "(Optional) Windows App Framework and version for the App Service."
+  default     = null
+}
+
 variable "app_command_line" {
   type        = string
   description = "(Optional) App command line to launch, e.g. /sbin/myserver -b 0.0.0.0."

@@ -12,7 +12,6 @@ tags = {
 public_hostname                     = "https://pagopa.it"
 dns_zone_prefix                     = "sitecorporate"
 external_domain                     = "pagopa.it"
-private_dns_zone                    = "prod.sitecorporate-private.pagopa.it"
 db_sku_name                         = "GP_Gen5_4"
 db_version                          = "5.7"
 db_storage_mb                       = "5120"
