@@ -82,13 +82,20 @@ resource "azurerm_key_vault_access_policy" "cert_renew_policy" {
 }
 
 ## azure appservice cms ##
+data "azuread_service_principal" "web_app_resource_provider" {
+  application_id = "abfa0a7c-a6b6-4736-8310-5855508787cd"
+}
+
 resource "azurerm_key_vault_access_policy" "cms_policy" {
   key_vault_id = module.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = module.portal_backend.principal_id
+  object_id    = data.azuread_service_principal.web_app_resource_provider.id
+
+  secret_permissions = [
+    "Get",
+  ]
 
   certificate_permissions = [
     "Get",
-    "List",
   ]
 }

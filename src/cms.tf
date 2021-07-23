@@ -36,24 +36,23 @@ data "azurerm_key_vault_certificate" "cms_tls_certificate" {
   key_vault_id = module.key_vault.id
 }
 
-resource "azurerm_app_service_certificate" "certificate" {
+resource "azurerm_app_service_certificate" "cms_certificate" {
   name                = format("%s-tls-certificate", local.project)
   resource_group_name = azurerm_resource_group.rg_cms.name
   location            = azurerm_resource_group.rg_cms.location
   key_vault_secret_id = data.azurerm_key_vault_certificate.cms_tls_certificate.secret_id
 }
 
-resource "azurerm_app_service_certificate_binding" "certificate_binding" {
-  hostname_binding_id = azurerm_app_service_custom_hostname_binding.hostname_binding.id
-  certificate_id      = azurerm_app_service_certificate.certificate.id
+resource "azurerm_app_service_certificate_binding" "cms_certificate_binding" {
+  hostname_binding_id = azurerm_app_service_custom_hostname_binding.cms_hostname_binding.id
+  certificate_id      = azurerm_app_service_certificate.cms_certificate.id
   ssl_state           = "IpBasedEnabled"
 }
 
-resource "azurerm_app_service_custom_hostname_binding" "hostname_binding" {
+resource "azurerm_app_service_custom_hostname_binding" "cms_hostname_binding" {
   hostname            = trim(azurerm_dns_cname_record.dns_cname_record_cms.fqdn, ".")
   app_service_name    = module.portal_backend.name
   resource_group_name = azurerm_resource_group.rg_cms.name
-  # thumbprint          = azurerm_app_service_certificate_binding.certificate_binding.thumbprint
 }
 
 # module "portal_certificate" {
