@@ -78,13 +78,13 @@ module "cdn_portal_frontend" {
 #     command = <<EOT
 #       az cdn custom-domain create \
 #         --resource-group ${azurerm_resource_group.rg_public.name} \
-#         --endpoint-name ${module.cdn_portal_frontend.hostname} \
+#         --endpoint-name ${module.cdn_portal_frontend.name} \
 #         --profile-name ${azurerm_cdn_profile.cdn_profile_common.name} \
 #         --name ${replace(trim(azurerm_dns_cname_record.frontend.fqdn, "."), ".", "-")} \
 #         --hostname ${trim(azurerm_dns_cname_record.frontend.fqdn, ".")}
 #       az cdn custom-domain enable-https \
 #         --resource-group ${azurerm_resource_group.rg_public.name} \
-#         --endpoint-name ${module.cdn_portal_frontend.hostname} \
+#         --endpoint-name ${module.cdn_portal_frontend.name} \
 #         --profile-name ${azurerm_cdn_profile.cdn_profile_common.name} \
 #         --name ${replace(trim(azurerm_dns_cname_record.frontend.fqdn, "."), ".", "-")}
 #     EOT
