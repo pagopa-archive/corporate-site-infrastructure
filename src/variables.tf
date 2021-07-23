@@ -292,3 +292,17 @@ variable "devops_service_connection_object_id" {
   description = "Azure deveops service connection id."
   default     = null
 }
+
+variable "azuread_service_principal_web_app_resource_provider_id" {
+  type        = string
+  description = "WebApp Service Resource Principal ID https://github.com/terraform-providers/terraform-provider-azurerm/blob/master/examples/app-service-certificate/stored-in-keyvault/main.tf#L33"
+  # this is the deafult value for tenant pagopa.it
+  default = "bb319217-f6ab-45d9-833d-555ef1173316"
+}
+
+variable "azuread_service_principal_azure_cdn_frontdoor_id" {
+  type        = string
+  description = "Azure CDN Front Door Principal ID"
+  # this is the deafult value for tenant pagopa.it
+  default = "f3b3f72f-4770-47a5-8c1e-aa298003be12"
+}

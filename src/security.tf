@@ -82,14 +82,14 @@ resource "azurerm_key_vault_access_policy" "cert_renew_policy" {
 }
 
 ## azure appservice cms ##
-data "azuread_service_principal" "web_app_resource_provider" {
-  application_id = "abfa0a7c-a6b6-4736-8310-5855508787cd"
-}
+# data "azuread_service_principal" "web_app_resource_provider" {
+#   application_id = "abfa0a7c-a6b6-4736-8310-5855508787cd"
+# }
 
 resource "azurerm_key_vault_access_policy" "cms_policy" {
   key_vault_id = module.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azuread_service_principal.web_app_resource_provider.id
+  object_id    = var.azuread_service_principal_web_app_resource_provider_id
 
   secret_permissions = [
     "Get",
@@ -102,14 +102,14 @@ resource "azurerm_key_vault_access_policy" "cms_policy" {
 
 ## azure cdn frontdoor ##
 ## remember to do this: https://docs.microsoft.com/it-it/azure/frontdoor/standard-premium/how-to-configure-https-custom-domain#register-azure-front-door
-data "azuread_service_principal" "azure_cdn_frontdoor" {
-  application_id = "205478c0-bd83-4e1b-a9d6-db63a3e1e1c8"
-}
+# data "azuread_service_principal" "azure_cdn_frontdoor" {
+#   application_id = "205478c0-bd83-4e1b-a9d6-db63a3e1e1c8"
+# }
 
 resource "azurerm_key_vault_access_policy" "azure_cdn_frontdoor_policy" {
   key_vault_id = module.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azuread_service_principal.azure_cdn_frontdoor.id
+  object_id    = var.azuread_service_principal_azure_cdn_frontdoor_id
 
   secret_permissions = [
     "Get",
