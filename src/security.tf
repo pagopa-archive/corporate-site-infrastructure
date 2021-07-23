@@ -99,3 +99,23 @@ resource "azurerm_key_vault_access_policy" "cms_policy" {
     "Get",
   ]
 }
+
+## azure cdn frontdoor ##
+## remember to do this: https://docs.microsoft.com/it-it/azure/frontdoor/standard-premium/how-to-configure-https-custom-domain#register-azure-front-door
+data "azuread_service_principal" "azure_cdn_frontdoor" {
+  application_id = "205478c0-bd83-4e1b-a9d6-db63a3e1e1c8"
+}
+
+resource "azurerm_key_vault_access_policy" "azure_cdn_frontdoor_policy" {
+  key_vault_id = module.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azuread_service_principal.azure_cdn_frontdoor.id
+
+  secret_permissions = [
+    "Get",
+  ]
+
+  certificate_permissions = [
+    "Get",
+  ]
+}

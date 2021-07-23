@@ -72,6 +72,7 @@ module "cdn_portal_frontend" {
 # resource "null_resource" "cdn_custom_domain" {
 #   # needs az cli > 2.0.81
 #   # see https://github.com/Azure/azure-cli/issues/12152
+#   # remember to do this: https://docs.microsoft.com/it-it/azure/frontdoor/standard-premium/how-to-configure-https-custom-domain#register-azure-front-door
 
 #   provisioner "local-exec" {
 #     command = <<EOT
