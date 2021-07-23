@@ -80,3 +80,15 @@ resource "azurerm_key_vault_access_policy" "cert_renew_policy" {
     "Import",
   ]
 }
+
+## azure appservice cms ##
+resource "azurerm_key_vault_access_policy" "cms_policy" {
+  key_vault_id = module.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = module.portal_backend.principal_id
+
+  certificate_permissions = [
+    "Get",
+    "List",
+  ]
+}

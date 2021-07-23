@@ -31,17 +31,38 @@ resource "azurerm_role_assignment" "app_service_container_registry" {
   skip_service_principal_aad_check = true
 }
 
-# data "azurerm_key_vault_secret" "cms_db_password" {
-#   name         = format("%s-cms-db-password", local.project)
-#   key_vault_id = module.key_vault.id
-# }
+data "azurerm_key_vault_certificate" "cms_tls_certificate" {
+  name         = format("cms-%s-sitecorporate-pagopa-it", var.env_long)
+  key_vault_id = module.key_vault.id
+}
 
-# resource "azurerm_app_service_custom_hostname_binding" "hostname_binding" {
-#   depends_on          = [azurerm_dns_cname_record.dns_cname_record_cms, azurerm_dns_txt_record.dns_txt_record_cms_asuid, module.portal_backend.name]
-#   hostname            = trim(azurerm_dns_cname_record.dns_cname_record_cms.fqdn, ".")
-#   app_service_name    = module.portal_backend.name
-#   resource_group_name = azurerm_resource_group.rg_cms.name
-#   # thumbprint          = var.custom_domain.certificate_thumbprint
+resource "azurerm_app_service_certificate" "certificate" {
+  name                = format("%s-tls-certificate", local.project)
+  resource_group_name = azurerm_resource_group.rg_cms.name
+  location            = azurerm_resource_group.rg_cms.location
+  key_vault_secret_id = data.azurerm_key_vault_certificate.cms_tls_certificate.secret_id
+}
+
+resource "azurerm_app_service_certificate_binding" "certificate_binding" {
+  hostname_binding_id = azurerm_app_service_custom_hostname_binding.hostname_binding.id
+  certificate_id      = azurerm_app_service_certificate.certificate.id
+  ssl_state           = "IpBasedEnabled"
+}
+
+resource "azurerm_app_service_custom_hostname_binding" "hostname_binding" {
+  hostname            = trim(azurerm_dns_cname_record.dns_cname_record_cms.fqdn, ".")
+  app_service_name    = module.portal_backend.name
+  resource_group_name = azurerm_resource_group.rg_cms.name
+  # thumbprint          = azurerm_app_service_certificate_binding.certificate_binding.thumbprint
+}
+
+# module "portal_certificate" {
+#     source = "git::https://github.com/pagopa/io-infrastructure-modules-new.git//azurerm_app_service_certificate?ref=v3.0.3"
+
+#     certificate_name  = format("cms-%s-sitecorporate-pagopa-it", var.env_short)
+#     key_vault_id      = module.key_vault.id
+#     resource_group_name = azurerm_resource_group.rg_cms.name
+#     location            = azurerm_resource_group.rg_cms.location
 # }
 
 module "portal_backend" {
@@ -73,9 +94,9 @@ module "portal_backend" {
   app_settings = {
 
     DB_NAME     = var.database_name
-    DB_USER     = data.azurerm_key_vault_secret.db_administrator_login.value          #format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.name)
-    DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value #var.db_administrator_login_password
-    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn                              #trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".")#
+    DB_USER     = data.azurerm_key_vault_secret.db_administrator_login.value                    #format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.name)
+    DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value           #var.db_administrator_login_password
+    DB_HOST     = trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".") #azurerm_mysql_server.mysql_server.fqdn
     WP_ENV      = var.env_long
     WP_HOME     = var.public_hostname
     WP_SITEURL  = format("%s/wp", var.public_hostname)

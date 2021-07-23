@@ -68,3 +68,24 @@ module "cdn_portal_frontend" {
 
   tags = var.tags
 }
+
+# resource "null_resource" "cdn_custom_domain" {
+#   # needs az cli > 2.0.81
+#   # see https://github.com/Azure/azure-cli/issues/12152
+
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       az cdn custom-domain create \
+#         --resource-group ${azurerm_resource_group.rg_public.name} \
+#         --endpoint-name ${module.cdn_portal_frontend.hostname} \
+#         --profile-name ${azurerm_cdn_profile.cdn_profile_common.name} \
+#         --name ${replace(trim(azurerm_dns_cname_record.frontend.fqdn, "."), ".", "-")} \
+#         --hostname ${trim(azurerm_dns_cname_record.frontend.fqdn, ".")}
+#       az cdn custom-domain enable-https \
+#         --resource-group ${azurerm_resource_group.rg_public.name} \
+#         --endpoint-name ${module.cdn_portal_frontend.hostname} \
+#         --profile-name ${azurerm_cdn_profile.cdn_profile_common.name} \
+#         --name ${replace(trim(azurerm_dns_cname_record.frontend.fqdn, "."), ".", "-")}
+#     EOT
+#   }
+# }
