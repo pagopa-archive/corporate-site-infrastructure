@@ -209,6 +209,16 @@ variable "cidr_subnet_wp" {
   type = list(string)
 }
 
+variable "cidr_subnet_vpn" {
+  type        = list(string)
+  description = "VPN network address space."
+}
+
+variable "cidr_subnet_dnsforwarder" {
+  type        = list(string)
+  description = "DNS Forwarder network address space."
+}
+
 # storage
 variable "storage_account_versioning" {
   type        = bool
@@ -305,4 +315,17 @@ variable "azuread_service_principal_azure_cdn_frontdoor_id" {
   description = "Azure CDN Front Door Principal ID"
   # this is the deafult value for tenant pagopa.it
   default = "f3b3f72f-4770-47a5-8c1e-aa298003be12"
+}
+
+## VPN ##
+variable "vpn_sku" {
+  type        = string
+  default     = "VpnGw1"
+  description = "VPN Gateway SKU"
+}
+
+variable "vpn_pip_sku" {
+  type        = string
+  default     = "Basic"
+  description = "VPN GW PIP SKU"
 }
