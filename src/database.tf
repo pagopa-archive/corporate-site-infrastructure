@@ -36,7 +36,6 @@ resource "azurerm_mysql_server" "mysql_server" {
   backup_retention_days            = 7
 
   tags = var.tags
-
 }
 
 resource "azurerm_mysql_firewall_rule" "mysql_firewall_rule_public" {

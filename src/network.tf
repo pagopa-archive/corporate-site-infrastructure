@@ -5,31 +5,8 @@ resource "azurerm_resource_group" "rg_vnet" {
   tags = var.tags
 }
 
-## Network security groups:
-### database
-resource "azurerm_network_security_group" "db_nsg" {
-  name                = format("%s-db-nsg", local.project)
-  location            = azurerm_resource_group.rg_vnet.location
-  resource_group_name = azurerm_resource_group.rg_vnet.name
-
-  /* TODO: create network security rules.
-  security_rule {
-    name                       = "allow"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-  */
-
-  tags = var.tags
-
-}
-
+# TODO use module azurerm
+# source = "git::https://github.com/pagopa/azurerm.git//virtual_network?ref=v1.0.7"
 resource "azurerm_virtual_network" "vnet" {
   name                = format("%s-vnet", local.project)
   location            = azurerm_resource_group.rg_vnet.location
@@ -40,6 +17,8 @@ resource "azurerm_virtual_network" "vnet" {
 
 }
 
+# TODO use module azurerm
+# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.3"
 module "subnet_db" {
   source                                         = "./modules/subnet"
   name                                           = format("%s-db-subnet", local.project)
@@ -50,6 +29,8 @@ module "subnet_db" {
   enforce_private_link_endpoint_network_policies = true
 }
 
+# TODO use module azurerm
+# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.3"
 module "subnet_wp" {
   source               = "./modules/subnet"
   name                 = format("%s-api-subnet", local.project)
@@ -71,14 +52,6 @@ module "subnet_wp" {
     "Microsoft.Storage"
   ]
 
-}
-
-module "subnet_public" {
-  source               = "./modules/subnet"
-  name                 = format("%s-fe-public", local.project)
-  address_prefixes     = var.cidr_subnet_public
-  resource_group_name  = azurerm_resource_group.rg_vnet.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
 }
 
 module "azdoa_snet" {

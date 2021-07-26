@@ -55,15 +55,7 @@ resource "azurerm_app_service_custom_hostname_binding" "cms_hostname_binding" {
   resource_group_name = azurerm_resource_group.rg_cms.name
 }
 
-# module "portal_certificate" {
-#     source = "git::https://github.com/pagopa/io-infrastructure-modules-new.git//azurerm_app_service_certificate?ref=v3.0.3"
-
-#     certificate_name  = format("cms-%s-sitecorporate-pagopa-it", var.env_short)
-#     key_vault_id      = module.key_vault.id
-#     resource_group_name = azurerm_resource_group.rg_cms.name
-#     location            = azurerm_resource_group.rg_cms.location
-# }
-
+# TODO use azurerm module
 module "portal_backend" {
   # depends_on = [azurerm_key_vault_access_policy.terraform_policy]
   #, azurerm_key_vault_access_policy.adgroup_admin_policy, azurerm_key_vault_access_policy.adgroup_contributors_policy]
