@@ -25,4 +25,6 @@ cidr_subnet                         = ["10.0.2.0/24"]
 cidr_subnet_public                  = ["10.0.3.0/24"]
 cidr_subnet_wp                      = ["10.0.4.0/24"]
 cidr_subnet_azdoa                   = ["10.0.5.0/24"]
+cidr_subnet_vpn                     = ["10.0.6.0/24"]
+cidr_subnet_dnsforwarder            = ["10.0.7.0/29"]
 devops_service_connection_object_id = "563d202b-d1ff-414b-b123-170cdcb409fe"
