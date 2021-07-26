@@ -39,11 +39,12 @@ module "cdn_portal_frontend" {
       value  = "max-age=31536000"
       },
       # Content-Security-Policy (in Report mode)
-      {
-        action = "Overwrite"
-        name   = "Content-Security-Policy-Report-Only"
-        value  = "default-src 'self'; frame-ancestors 'self'; script-src 'self'; style-src 'self'"
-    }]
+      #   {
+      #     action = "Overwrite"
+      #     name   = "Content-Security-Policy-Report-Only"
+      #     value  = "default-src 'self'; frame-ancestors 'self'; script-src 'self'; style-src 'self'"
+      # }
+    ]
 
   }
 
@@ -59,6 +60,24 @@ module "cdn_portal_frontend" {
       protocol      = "Https"
       hostname      = null
       path          = null
+      fragment      = null
+      query_string  = null
+    }
+
+  }]
+
+  # redirect / to /it
+  delivery_rule_redirect = [{
+    name         = "ToItIndex"
+    order        = 2
+    operator     = "Equal"
+    match_values = ["/"]
+
+    url_redirect_action = {
+      redirect_type = "Found"
+      protocol      = null
+      hostname      = null
+      path          = "/it"
       fragment      = null
       query_string  = null
     }
