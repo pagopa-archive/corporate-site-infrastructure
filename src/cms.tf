@@ -85,9 +85,9 @@ module "portal_backend" {
   app_settings = {
 
     DB_NAME     = var.database_name
-    DB_USER     = data.azurerm_key_vault_secret.db_administrator_login.value                    #format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.name)
-    DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value           #var.db_administrator_login_password
-    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn#trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".") #
+    DB_USER     = data.azurerm_key_vault_secret.db_administrator_login.value          #format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.name)
+    DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value #var.db_administrator_login_password
+    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn                              #trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".") #
     WP_ENV      = var.cms_env
     WP_HOME     = var.public_hostname
     WP_SITEURL  = format("%s/wp", var.public_hostname)
@@ -97,6 +97,8 @@ module "portal_backend" {
     MICROSOFT_AZURE_CONTAINER              = "media"
     MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD = true
 
+    # https://github.com/terraform-providers/terraform-provider-azurerm/issues/5073#issuecomment-564296263
+    # in terraform app service needs log block instead WEBSITE_HTTPLOGGING_RETENTION_DAYS
     WEBSITE_HTTPLOGGING_RETENTION_DAYS  = 7
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
 
