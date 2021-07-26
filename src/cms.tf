@@ -87,8 +87,8 @@ module "portal_backend" {
     DB_NAME     = var.database_name
     DB_USER     = data.azurerm_key_vault_secret.db_administrator_login.value                    #format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.name)
     DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value           #var.db_administrator_login_password
-    DB_HOST     = trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".") #azurerm_mysql_server.mysql_server.fqdn
-    WP_ENV      = var.env_long
+    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn#trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".") #
+    WP_ENV      = var.cms_env
     WP_HOME     = var.public_hostname
     WP_SITEURL  = format("%s/wp", var.public_hostname)
 
