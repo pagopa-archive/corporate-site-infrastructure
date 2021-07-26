@@ -28,10 +28,6 @@ variable "tags" {
   }
 }
 
-variable "public_hostname" {
-  type = string
-}
-
 variable "private_dns_zone" {
   type    = string
   default = "privatelink.mysql.database.azure.com"
@@ -42,9 +38,18 @@ variable "db_sku_name" {
   description = "Specifies the SKU Name for this MySQL Server."
 }
 
+variable "cms_base_url" {
+  type = string
+}
+
 variable "cms_env" {
   type        = string
   description = "CMS environments: development, staging or production"
+}
+
+variable "cms_tls_certificate_name" {
+  type        = string
+  description = "CMS TLS certificate name stored into key vault"
 }
 
 variable "db_version" {
@@ -159,6 +164,12 @@ variable "cidr_subnet_db" {
 variable "cidr_subnet_vpn" {
   type        = list(string)
   description = "VPN network address space."
+}
+
+variable "cidr_subnet_vpn_gw" {
+  type        = list(string)
+  description = "VPN network address space."
+  default     = ["172.16.1.0/24"]
 }
 
 variable "cidr_subnet_dnsforwarder" {

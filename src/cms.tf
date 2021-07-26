@@ -32,7 +32,7 @@ resource "azurerm_role_assignment" "app_service_container_registry" {
 }
 
 data "azurerm_key_vault_certificate" "cms_tls_certificate" {
-  name         = format("cms-%s-sitecorporate-pagopa-it", var.env_long)
+  name         = var.cms_tls_certificate_name
   key_vault_id = module.key_vault.id
 }
 
@@ -85,12 +85,12 @@ module "portal_backend" {
   app_settings = {
 
     DB_NAME     = var.database_name
-    DB_USER     = data.azurerm_key_vault_secret.db_administrator_login.value          #format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.name)
-    DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value #var.db_administrator_login_password
-    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn                              #trimsuffix(azurerm_private_dns_a_record.private_dns_a_record_mysql.fqdn, ".") #
+    DB_USER     = format("%s@%s", data.azurerm_key_vault_secret.db_administrator_login.value, azurerm_mysql_server.mysql_server.fqdn)
+    DB_PASSWORD = data.azurerm_key_vault_secret.db_administrator_login_password.value
+    DB_HOST     = azurerm_mysql_server.mysql_server.fqdn
     WP_ENV      = var.cms_env
-    WP_HOME     = var.public_hostname
-    WP_SITEURL  = format("%s/wp", var.public_hostname)
+    WP_HOME     = var.cms_base_url
+    WP_SITEURL  = format("%s/wp", var.cms_base_url)
 
     MICROSOFT_AZURE_ACCOUNT_KEY            = module.storage_account.primary_access_key
     MICROSOFT_AZURE_ACCOUNT_NAME           = module.storage_account.name
@@ -119,7 +119,7 @@ module "portal_backend" {
 
   always_on = "true"
 
-  allowed_subnets = [module.subnet_cms.id, module.subnet_db.id]
+  allowed_subnets = [module.subnet_cms.id, module.subnet_db.id, module.azdoa_snet[0].id]
   # TODO Remove and add allowed_ips it to ignore list
   allowed_ips = ["0.0.0.0/0"]
 

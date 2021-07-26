@@ -62,7 +62,7 @@ resource "azurerm_private_dns_zone" "mysql_dns_zone" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "mysql_dns_zone_virtual_link" {
-  name                  = format("%s-private-dns-zone-link", local.project)
+  name                  = format("%s-mysql-private-dns-zone-link", local.project)
   resource_group_name   = azurerm_resource_group.rg_db.name
   private_dns_zone_name = azurerm_private_dns_zone.mysql_dns_zone.name
   virtual_network_id    = azurerm_virtual_network.vnet.id
@@ -71,18 +71,18 @@ resource "azurerm_private_dns_zone_virtual_network_link" "mysql_dns_zone_virtual
 }
 
 resource "azurerm_private_endpoint" "mysql_private_endpoint" {
-  name                = format("%s-private-endpoint", local.project)
+  name                = format("%s-mysql-private-endpoint", local.project)
   location            = var.location
   resource_group_name = azurerm_resource_group.rg_db.name
   subnet_id           = module.subnet_db.id
 
   private_dns_zone_group {
-    name                 = format("%s-private-dns-zone-group", local.project)
+    name                 = format("%s-mysql-private-dns-zone-group", local.project)
     private_dns_zone_ids = [azurerm_private_dns_zone.mysql_dns_zone.id]
   }
 
   private_service_connection {
-    name                           = format("%s-private-service-connection", azurerm_mysql_server.mysql_server.name)
+    name                           = format("%s-mysql-private-service-connection", azurerm_mysql_server.mysql_server.name)
     private_connection_resource_id = azurerm_mysql_server.mysql_server.id
     is_manual_connection           = false
     subresource_names              = ["mysqlServer"]

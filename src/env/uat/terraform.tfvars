@@ -9,7 +9,6 @@ tags = {
   Source      = "https://github.com/pagopa/corporate-site-infrastructure"
   CostCenter  = "TS300 - PRODOTTI E SERVIZI"
 }
-public_hostname                     = "https://cms.uat.sitecorporate.pagopa.it"
 dns_zone_prefix                     = "uat.sitecorporate"
 external_domain                     = "pagopa.it"
 db_sku_name                         = "GP_Gen5_4"
@@ -17,7 +16,9 @@ db_version                          = "5.7"
 db_storage_mb                       = "5120"
 db_collation                        = "utf8_unicode_ci"
 db_ssl_enforcement_enabled          = true
+cms_base_url                        = "https://cms.uat.sitecorporate.pagopa.it"
 cms_env                             = "staging"
+cms_tls_certificate_name            = "cms-uat-sitecorporate-pagopa-it"
 database_name                       = "ppawp"
 enable_azdoa                        = true
 cidr_vnet                           = ["10.0.0.0/16"]

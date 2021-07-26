@@ -28,7 +28,7 @@ module "vpn" {
 
   vpn_client_configuration = [
     {
-      address_space         = ["172.16.1.0/24"],
+      address_space         = var.cidr_subnet_vpn_gw,
       vpn_client_protocols  = ["OpenVPN"],
       aad_audience          = data.azuread_application.vpn_app.application_id
       aad_issuer            = format("https://sts.windows.net/%s/", data.azurerm_subscription.current.tenant_id)
