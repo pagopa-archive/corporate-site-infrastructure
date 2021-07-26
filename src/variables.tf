@@ -138,8 +138,8 @@ variable "backend_sku" {
     capacity = number
   })
   default = {
-    tier     = "Standard"
-    size     = "S2"
+    tier     = "PremiumV2"
+    size     = "P1v2"
     capacity = 1
   }
 }

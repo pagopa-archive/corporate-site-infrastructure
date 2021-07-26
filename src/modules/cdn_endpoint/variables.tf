@@ -93,3 +93,21 @@ variable "delivery_rule_request_scheme_condition" {
   default = []
 }
 
+variable "delivery_rule_redirect" {
+  type = list(object({
+    name         = string
+    order        = number
+    operator     = string
+    match_values = list(string)
+    url_redirect_action = object({
+      redirect_type = string
+      protocol      = string
+      hostname      = string
+      path          = string
+      fragment      = string
+      query_string  = string
+    })
+  }))
+  default = []
+}
+
