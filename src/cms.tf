@@ -113,7 +113,6 @@ module "portal_backend" {
     # # application insights
     # APPLICATIONINSIGHTS_CONNECTION_STRING = format("InstrumentationKey=%s",
     # azurerm_application_insights.application_insights.instrumentation_key)
-
   }
 
   linux_fx_version = "DOCKER|nginx"

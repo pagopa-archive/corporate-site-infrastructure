@@ -37,19 +37,6 @@ variable "private_dns_zone" {
   default = "privatelink.mysql.database.azure.com"
 }
 
-# mysql
-# variable "db_administrator_login" {
-#   type        = string
-#   description = "The Administrator Login for the MySQL Server."
-#   sensitive   = true
-# }
-
-# variable "db_administrator_login_password" {
-#   type        = string
-#   description = "The Password associated with the administrator_login."
-#   sensitive   = true
-# }
-
 variable "db_sku_name" {
   type        = string
   description = "Specifies the SKU Name for this MySQL Server."
@@ -124,41 +111,6 @@ variable "db_collation" {
   default     = "utf8_unicode_ci"
 }
 
-# variable "cms_domain_verification_id" {
-#   type        = string
-#   description = "CMS App Service Custom Domain Verification ID"
-# }
-
-
-# variable "db_monitor_metric_alert_criteria" {
-#   default = {}
-
-#   description = <<EOD
-# Map of name = criteria objects, see these docs for options
-# https://docs.microsoft.com/en-us/azure/azure-monitor/platform/metrics-supported#microsoftdbforpostgresqlservers
-# https://docs.microsoft.com/en-us/azure/postgresql/concepts-limits#maximum-connections
-# EOD
-
-#   type = map(object({
-#     # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
-#     aggregation = string
-#     metric_name = string
-#     # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
-#     operator  = string
-#     threshold = number
-#     # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
-#     frequency = string
-#     # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
-#     window_size = string
-
-#     dimension = map(object({
-#       name     = string
-#       operator = string
-#       values   = list(string)
-#     }))
-#   }))
-# }
-
 ## Azure container registry
 variable "sku_container_registry" {
   type    = string
@@ -192,7 +144,6 @@ variable "backend_sku" {
   }
 }
 
-
 # Network
 variable "cidr_vnet" {
   type = list(string)
@@ -203,10 +154,6 @@ variable "cidr_subnet" {
 }
 
 variable "cidr_subnet_db" {
-  type = list(string)
-}
-
-variable "cidr_subnet_public" {
   type = list(string)
 }
 

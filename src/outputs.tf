@@ -50,12 +50,3 @@ output "profile_cdn_name" {
 output "resource_group_name_public" {
   value = azurerm_resource_group.rg_public.name
 }
-
-# external
-# output "api_gateway_public_id" {
-#   value = azurerm_public_ip.apigateway_public_ip.ip_address
-# }
-
-# output "apim_gateway_url" {
-#   value = module.apim.gateway_url
-# }

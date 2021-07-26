@@ -62,7 +62,6 @@ resource "azurerm_private_dns_zone" "mysql_dns_zone" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "mysql_dns_zone_virtual_link" {
-
   name                  = format("%s-private-dns-zone-link", local.project)
   resource_group_name   = azurerm_resource_group.rg_db.name
   private_dns_zone_name = azurerm_private_dns_zone.mysql_dns_zone.name
@@ -91,25 +90,6 @@ resource "azurerm_private_endpoint" "mysql_private_endpoint" {
 
   tags = var.tags
 }
-
-# resource "azurerm_private_endpoint" "mysql_private_endpoint" {
-#   name                = format("%s-db-private-endpoint", local.project)
-#   location            = azurerm_resource_group.rg_db.location
-#   resource_group_name = azurerm_resource_group.rg_db.name
-#   subnet_id           = module.subnet_db.id
-
-#   private_dns_zone_group {
-#     name                 = format("%s-db-private-dns-zone-group", local.project)
-#     private_dns_zone_ids = [azurerm_private_dns_zone.private_dns_zone_mysql.id]
-#   }
-
-#   private_service_connection {
-#     name                           = format("%s-db-private-service-connection", local.project)
-#     private_connection_resource_id = azurerm_mysql_server.mysql_server.id
-#     is_manual_connection           = false
-#     subresource_names              = ["mysqlSqlServer"]
-#   }
-# }
 
 resource "azurerm_private_dns_a_record" "private_dns_a_record_mysql" {
   name                = "mysql"
