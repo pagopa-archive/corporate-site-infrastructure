@@ -17,6 +17,7 @@ db_version                          = "5.7"
 db_storage_mb                       = "5120"
 db_collation                        = "utf8_unicode_ci"
 db_ssl_enforcement_enabled          = true
+cms_env                             = "production"
 database_name                       = "ppawp"
 enable_azdoa                        = true
 cidr_vnet                           = ["10.0.0.0/16"]

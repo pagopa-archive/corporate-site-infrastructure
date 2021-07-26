@@ -55,6 +55,11 @@ variable "db_sku_name" {
   description = "Specifies the SKU Name for this MySQL Server."
 }
 
+variable "cms_env" {
+  type        = string
+  description = "CMS environments: development, staging or production"
+}
+
 variable "db_version" {
   type        = string
   description = "Specifies the version of MySQL to use."
