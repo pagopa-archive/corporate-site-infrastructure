@@ -27,5 +27,10 @@ cidr_subnet_public                  = ["10.0.3.0/24"]
 cidr_subnet_wp                      = ["10.0.4.0/24"]
 cidr_subnet_azdoa                   = ["10.0.5.0/24"]
 cidr_subnet_vpn                     = ["10.0.6.0/24"]
-cidr_subnet_dnsforwarder            = ["10.0.7.0/29"]
+cidr_subnet_dnsforwarder            = ["10.0.8.0/29"]
 devops_service_connection_object_id = "be53c8fa-9780-419c-8f45-f3166b767951"
+backend_sku = {
+  tier     = "PremiumV2"
+  size     = "P1v2"
+  capacity = 1
+}
