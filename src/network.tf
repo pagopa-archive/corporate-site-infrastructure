@@ -14,13 +14,12 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = var.cidr_vnet
 
   tags = var.tags
-
 }
 
 # TODO use module azurerm
-# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.3"
+# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
 module "subnet_db" {
-  source                                         = "./modules/subnet"
+  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
   name                                           = format("%s-db-subnet", local.project)
   address_prefixes                               = var.cidr_subnet_db
   resource_group_name                            = azurerm_resource_group.rg_vnet.name
@@ -30,11 +29,11 @@ module "subnet_db" {
 }
 
 # TODO use module azurerm
-# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.3"
-module "subnet_wp" {
-  source               = "./modules/subnet"
-  name                 = format("%s-api-subnet", local.project)
-  address_prefixes     = var.cidr_subnet
+# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
+module "subnet_cms" {
+  source               = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
+  name                 = format("%s-cms-subnet", local.project)
+  address_prefixes     = var.cidr_subnet_cms
   resource_group_name  = azurerm_resource_group.rg_vnet.name
   virtual_network_name = azurerm_virtual_network.vnet.name
 
@@ -51,11 +50,10 @@ module "subnet_wp" {
     "Microsoft.Web",
     "Microsoft.Storage"
   ]
-
 }
 
 module "azdoa_snet" {
-  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.3"
+  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
   count                                          = var.enable_azdoa ? 1 : 0
   name                                           = format("%s-azdoa-snet", local.project)
   address_prefixes                               = var.cidr_subnet_azdoa

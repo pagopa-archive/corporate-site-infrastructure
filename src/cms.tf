@@ -119,12 +119,12 @@ module "portal_backend" {
 
   always_on = "true"
 
-  allowed_subnets = [module.subnet_wp.id, module.subnet_db.id]
+  allowed_subnets = [module.subnet_cms.id, module.subnet_db.id]
   # TODO Remove and add allowed_ips it to ignore list
   allowed_ips = ["0.0.0.0/0"]
 
-  subnet_name = module.subnet_wp.name
-  subnet_id   = module.subnet_wp.id
+  subnet_name = module.subnet_cms.name
+  subnet_id   = module.subnet_cms.id
 
   tags = var.tags
 }

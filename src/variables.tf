@@ -129,7 +129,6 @@ variable "retention_policy_acr" {
   description = "Container registry retention policy."
 }
 
-
 # BACKEND
 variable "backend_sku" {
   type = object({
@@ -149,15 +148,11 @@ variable "cidr_vnet" {
   type = list(string)
 }
 
-variable "cidr_subnet" {
+variable "cidr_subnet_cms" {
   type = list(string)
 }
 
 variable "cidr_subnet_db" {
-  type = list(string)
-}
-
-variable "cidr_subnet_wp" {
   type = list(string)
 }
 
