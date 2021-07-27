@@ -6,6 +6,14 @@ resource "azurerm_dns_zone" "public" {
   tags = var.tags
 }
 
+resource "azurerm_private_dns_zone" "private" {
+  count               = (var.dns_zone_prefix == null || var.external_domain == null) ? 0 : 1
+  name                = join(".", [var.dns_zone_prefix, var.external_domain])
+  resource_group_name = azurerm_resource_group.rg_vnet.name
+
+  tags = var.tags
+}
+
 # UAT public DNS delegation
 resource "azurerm_dns_ns_record" "scorp_uat_pagopa_it_ns" {
   count               = var.env_short == "p" ? 1 : 0

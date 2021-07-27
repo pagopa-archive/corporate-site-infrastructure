@@ -99,7 +99,7 @@ module "portal_backend" {
 
     # https://github.com/terraform-providers/terraform-provider-azurerm/issues/5073#issuecomment-564296263
     # in terraform app service needs log block instead WEBSITE_HTTPLOGGING_RETENTION_DAYS
-    WEBSITE_HTTPLOGGING_RETENTION_DAYS  = 7
+    # WEBSITE_HTTPLOGGING_RETENTION_DAYS  = 7
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
 
     DOCKER_REGISTRY_SERVER_URL      = "https://${azurerm_container_registry.container_registry.login_server}"
@@ -119,12 +119,60 @@ module "portal_backend" {
 
   always_on = "true"
 
-  allowed_subnets = [module.subnet_cms.id, module.subnet_db.id, module.azdoa_snet[0].id]
-  # TODO Remove and add allowed_ips it to ignore list
-  allowed_ips = ["0.0.0.0/0"]
+  # when private endpoint enabled allowed_subnets is not needed
+  # allowed_subnets = [
+  #   module.subnet_cms.id,
+  #   module.subnet_cms_private.id,
+  #   module.subnet_db.id,
+  #   module.azdoa_snet[0].id,
+  #   module.vpn_snet.id,
+  # ]
 
-  subnet_name = module.subnet_cms.name
-  subnet_id   = module.subnet_cms.id
+  # TODO: not works
+  # subnet_name = module.subnet_cms.name
+  # subnet_id   = module.subnet_cms.id
 
   tags = var.tags
+}
+
+resource "azurerm_private_dns_zone" "privatelink_azurewebsites_net" {
+  name                = "privatelink.azurewebsites.net"
+  resource_group_name = azurerm_resource_group.rg_vnet.name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "portal_backend_private_link" {
+  name                  = format("%s-private-dns-zone-link", module.portal_backend.name)
+  resource_group_name   = azurerm_resource_group.rg_vnet.name
+  private_dns_zone_name = azurerm_private_dns_zone.privatelink_azurewebsites_net.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+
+  tags = var.tags
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "portal_backend" {
+  name                  = format("%s-private-dns-zone", module.portal_backend.name)
+  resource_group_name   = azurerm_resource_group.rg_vnet.name
+  private_dns_zone_name = azurerm_private_dns_zone.private[0].name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "portal_backend" {
+  name                = format("%s-private-endpoint", module.portal_backend.name)
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_cms.name
+  subnet_id           = module.subnet_cms_private.id
+
+  private_dns_zone_group {
+    name                 = format("%s-private-dns-zone-group", module.portal_backend.name)
+    private_dns_zone_ids = [azurerm_private_dns_zone.privatelink_azurewebsites_net.id, azurerm_private_dns_zone.private[0].id]
+  }
+
+  private_service_connection {
+    name                           = format("%s-private-service-connection", module.portal_backend.name)
+    private_connection_resource_id = module.portal_backend.id
+    is_manual_connection           = false
+    subresource_names              = ["sites"]
+  }
 }

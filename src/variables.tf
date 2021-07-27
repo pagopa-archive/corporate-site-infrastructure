@@ -157,6 +157,10 @@ variable "cidr_subnet_cms" {
   type = list(string)
 }
 
+variable "cidr_subnet_cms_private" {
+  type = list(string)
+}
+
 variable "cidr_subnet_db" {
   type = list(string)
 }

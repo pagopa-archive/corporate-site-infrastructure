@@ -24,6 +24,7 @@ enable_azdoa                        = true
 cidr_vnet                           = ["10.0.0.0/16"]
 cidr_subnet_db                      = ["10.0.1.0/24"]
 cidr_subnet_cms                     = ["10.0.2.0/24"]
+cidr_subnet_cms_private             = ["10.0.3.0/24"]
 cidr_subnet_azdoa                   = ["10.0.5.0/24"]
 cidr_subnet_vpn                     = ["10.0.6.0/24"]
 cidr_subnet_dnsforwarder            = ["10.0.7.0/29"]
