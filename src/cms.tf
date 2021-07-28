@@ -24,46 +24,15 @@ resource "azurerm_container_registry" "container_registry" {
   tags = var.tags
 }
 
-resource "azurerm_role_assignment" "app_service_container_registry" {
-  scope                            = azurerm_container_registry.container_registry.id
-  role_definition_name             = "AcrPull"
-  principal_id                     = module.portal_backend.principal_id
-  skip_service_principal_aad_check = true
-}
-
-data "azurerm_key_vault_certificate" "cms_tls_certificate" {
-  name         = var.cms_tls_certificate_name
-  key_vault_id = module.key_vault.id
-}
-
-resource "azurerm_app_service_certificate" "cms_certificate" {
-  name                = format("%s-tls-certificate", local.project)
-  resource_group_name = azurerm_resource_group.rg_cms.name
-  location            = azurerm_resource_group.rg_cms.location
-  key_vault_secret_id = data.azurerm_key_vault_certificate.cms_tls_certificate.secret_id
-}
-
-resource "azurerm_app_service_certificate_binding" "cms_certificate_binding" {
-  hostname_binding_id = azurerm_app_service_custom_hostname_binding.cms_hostname_binding.id
-  certificate_id      = azurerm_app_service_certificate.cms_certificate.id
-  ssl_state           = "IpBasedEnabled"
-}
-
-resource "azurerm_app_service_custom_hostname_binding" "cms_hostname_binding" {
-  hostname            = trim(azurerm_dns_cname_record.dns_cname_record_cms.fqdn, ".")
-  app_service_name    = module.portal_backend.name
-  resource_group_name = azurerm_resource_group.rg_cms.name
-}
-
 # TODO use azurerm module
-module "portal_backend" {
+module "cms" {
   # depends_on = [azurerm_key_vault_access_policy.terraform_policy]
   #, azurerm_key_vault_access_policy.adgroup_admin_policy, azurerm_key_vault_access_policy.adgroup_contributors_policy]
   # source = "git::https://github.com/pagopa/azurerm.git//app_service?ref=v1.0.38"
   source = "./modules/app_service"
 
-  name                = format("%s-portal-backend", local.project)
-  plan_name           = format("%s-plan-portal-backend", local.project)
+  name                = format("%s-cms", local.project)
+  plan_name           = format("%s-plan-cms", local.project)
   resource_group_name = azurerm_resource_group.rg_cms.name
   plan_kind           = "Linux"
 
@@ -99,7 +68,7 @@ module "portal_backend" {
 
     # https://github.com/terraform-providers/terraform-provider-azurerm/issues/5073#issuecomment-564296263
     # in terraform app service needs log block instead WEBSITE_HTTPLOGGING_RETENTION_DAYS
-    WEBSITE_HTTPLOGGING_RETENTION_DAYS  = 7
+    # WEBSITE_HTTPLOGGING_RETENTION_DAYS  = 7
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
 
     DOCKER_REGISTRY_SERVER_URL      = "https://${azurerm_container_registry.container_registry.login_server}"
@@ -115,16 +84,40 @@ module "portal_backend" {
     # azurerm_application_insights.application_insights.instrumentation_key)
   }
 
-  linux_fx_version = "DOCKER|nginx"
+  linux_fx_version = "DOCKER|mcr.microsoft.com/appsvc/staticsite:latest"
 
   always_on = "true"
 
-  allowed_subnets = [module.subnet_cms.id, module.subnet_db.id, module.azdoa_snet[0].id]
-  # TODO Remove and add allowed_ips it to ignore list
-  allowed_ips = ["0.0.0.0/0"]
-
-  subnet_name = module.subnet_cms.name
-  subnet_id   = module.subnet_cms.id
+  subnet_name = module.subnet_cms_outbound.name
+  subnet_id   = module.subnet_cms_outbound.id
 
   tags = var.tags
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "cms_private_link" {
+  name                  = format("%s-private-dns-zone-link", module.cms.name)
+  resource_group_name   = azurerm_resource_group.rg_vnet.name
+  private_dns_zone_name = azurerm_private_dns_zone.privatelink_azurewebsites_net.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "cms" {
+  name                = format("%s-private-endpoint", module.cms.name)
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_cms.name
+  subnet_id           = module.subnet_cms_inbound.id
+
+  private_dns_zone_group {
+    name                 = format("%s-private-dns-zone-group", module.cms.name)
+    private_dns_zone_ids = [azurerm_private_dns_zone.privatelink_azurewebsites_net.id]
+  }
+
+  private_service_connection {
+    name                           = format("%s-private-service-connection", module.cms.name)
+    private_connection_resource_id = module.cms.id
+    is_manual_connection           = false
+    subresource_names              = ["sites"]
+  }
 }

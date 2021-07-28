@@ -153,7 +153,11 @@ variable "cidr_vnet" {
   type = list(string)
 }
 
-variable "cidr_subnet_cms" {
+variable "cidr_subnet_cms_outbound" {
+  type = list(string)
+}
+
+variable "cidr_subnet_cms_inbound" {
   type = list(string)
 }
 

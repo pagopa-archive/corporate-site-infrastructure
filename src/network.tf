@@ -5,8 +5,6 @@ resource "azurerm_resource_group" "rg_vnet" {
   tags = var.tags
 }
 
-# TODO use module azurerm
-# source = "git::https://github.com/pagopa/azurerm.git//virtual_network?ref=v1.0.7"
 resource "azurerm_virtual_network" "vnet" {
   name                = format("%s-vnet", local.project)
   location            = azurerm_resource_group.rg_vnet.location
@@ -16,8 +14,6 @@ resource "azurerm_virtual_network" "vnet" {
   tags = var.tags
 }
 
-# TODO use module azurerm
-# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
 module "subnet_db" {
   source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
   name                                           = format("%s-db-subnet", local.project)
@@ -28,18 +24,15 @@ module "subnet_db" {
   enforce_private_link_endpoint_network_policies = true
 }
 
-# TODO use module azurerm
-# source = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
-module "subnet_cms" {
+module "subnet_cms_outbound" {
   source               = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
-  name                 = format("%s-cms-subnet", local.project)
-  address_prefixes     = var.cidr_subnet_cms
+  name                 = format("%s-cms-subnet-outbound", local.project)
+  address_prefixes     = var.cidr_subnet_cms_outbound
   resource_group_name  = azurerm_resource_group.rg_vnet.name
   virtual_network_name = azurerm_virtual_network.vnet.name
 
   delegation = {
-    name = "default"
-
+    name = "Microsoft.Web.serverFarms"
     service_delegation = {
       name    = "Microsoft.Web/serverFarms"
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
@@ -47,9 +40,19 @@ module "subnet_cms" {
   }
 
   service_endpoints = [
+    "Microsoft.Storage",
     "Microsoft.Web",
-    "Microsoft.Storage"
   ]
+}
+
+module "subnet_cms_inbound" {
+  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
+  name                                           = format("%s-cms-subnet-inbound", local.project)
+  address_prefixes                               = var.cidr_subnet_cms_inbound
+  resource_group_name                            = azurerm_resource_group.rg_vnet.name
+  virtual_network_name                           = azurerm_virtual_network.vnet.name
+  service_endpoints                              = ["Microsoft.Web"]
+  enforce_private_link_endpoint_network_policies = true
 }
 
 module "azdoa_snet" {
