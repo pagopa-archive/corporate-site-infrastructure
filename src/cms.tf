@@ -111,7 +111,7 @@ resource "azurerm_private_endpoint" "cms" {
 
   private_dns_zone_group {
     name                 = format("%s-private-dns-zone-group", module.cms.name)
-    private_dns_zone_ids = [azurerm_private_dns_zone.privatelink_azurewebsites_net.id, azurerm_private_dns_zone.private[0].id]
+    private_dns_zone_ids = [azurerm_private_dns_zone.privatelink_azurewebsites_net.id]
   }
 
   private_service_connection {
