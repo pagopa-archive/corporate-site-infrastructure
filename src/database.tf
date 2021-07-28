@@ -29,21 +29,12 @@ resource "azurerm_mysql_server" "mysql_server" {
 
   auto_grow_enabled = var.db_auto_grow_enabled
 
-  # public_network_access_enabled    = var.db_public_network_access_enabled
-  public_network_access_enabled    = true
+  public_network_access_enabled    = false
   ssl_enforcement_enabled          = var.db_ssl_enforcement_enabled
   ssl_minimal_tls_version_enforced = var.db_ssl_minimal_tls_version_enforced
   backup_retention_days            = 7
 
   tags = var.tags
-}
-
-resource "azurerm_mysql_firewall_rule" "mysql_firewall_rule_public" {
-  name                = "azure"
-  resource_group_name = azurerm_resource_group.rg_db.name
-  server_name         = azurerm_mysql_server.mysql_server.name
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
 }
 
 resource "azurerm_mysql_database" "mysql_database" {

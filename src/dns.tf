@@ -14,6 +14,22 @@ resource "azurerm_private_dns_zone" "private" {
   tags = var.tags
 }
 
+resource "azurerm_private_dns_zone_virtual_network_link" "private" {
+  name                  = format("%s-private-dns-zone", local.project)
+  resource_group_name   = azurerm_resource_group.rg_vnet.name
+  private_dns_zone_name = azurerm_private_dns_zone.private[0].name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+
+  tags = var.tags
+}
+
+resource "azurerm_private_dns_zone" "privatelink_azurewebsites_net" {
+  name                = "privatelink.azurewebsites.net"
+  resource_group_name = azurerm_resource_group.rg_vnet.name
+
+  tags = var.tags
+}
+
 # UAT public DNS delegation
 resource "azurerm_dns_ns_record" "scorp_uat_pagopa_it_ns" {
   count               = var.env_short == "p" ? 1 : 0
@@ -31,37 +47,6 @@ resource "azurerm_dns_ns_record" "scorp_uat_pagopa_it_ns" {
 }
 
 ## DNS Records
-
-resource "azurerm_dns_cname_record" "cms" {
-  name                = "cms"
-  zone_name           = azurerm_dns_zone.public[0].name
-  resource_group_name = azurerm_resource_group.rg_vnet.name
-  ttl                 = var.dns_default_ttl_sec
-  record              = module.portal_backend.default_site_hostname
-  tags                = var.tags
-}
-
-resource "azurerm_dns_txt_record" "txt_asuid" {
-  name                = "asuid.${azurerm_dns_cname_record.dns_cname_record_cms.name}"
-  zone_name           = azurerm_dns_zone.public[0].name
-  resource_group_name = azurerm_resource_group.rg_vnet.name
-  ttl                 = var.dns_default_ttl_sec
-  record {
-    value = module.portal_backend.custom_domain_verification_id
-  }
-
-  tags = var.tags
-}
-
-resource "azurerm_dns_cname_record" "dns_cname_record_cms" {
-  name                = "cms"
-  zone_name           = azurerm_dns_zone.public[0].name
-  resource_group_name = azurerm_resource_group.rg_vnet.name
-  ttl                 = var.dns_default_ttl_sec
-  record              = module.portal_backend.default_site_hostname
-
-  tags = var.tags
-}
 
 resource "azurerm_dns_cname_record" "frontend" {
   name                = "www"

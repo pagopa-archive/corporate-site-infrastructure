@@ -5,11 +5,11 @@ output "acr_login_server" {
 
 # web app service
 output "cms_hostname" {
-  value = module.portal_backend.default_site_hostname
+  value = module.cms.default_site_hostname
 }
 
 output "cms_name" {
-  value = module.portal_backend.name
+  value = module.cms.name
 }
 
 # database mysql

@@ -9,7 +9,7 @@ tags = {
   Source      = "https://github.com/pagopa/corporate-site-infrastructure"
   CostCenter  = ""
 }
-public_hostname            = "https://ppacorpsite-d-portal-backend.azurewebsites.net"
+public_hostname            = "https://ppacorpsite-d-cms.azurewebsites.net"
 dns_zone_prefix            = "dev.ppascorp"
 external_domain            = "justbit.it"
 db_sku_name                = "GP_Gen5_4"
@@ -21,7 +21,7 @@ cms_env                    = "development"
 database_name              = "ppawp"
 cidr_vnet                  = ["10.0.0.0/16"]
 cidr_subnet_db             = ["10.0.1.0/24"]
-cidr_subnet_cms            = ["10.0.2.0/24"]
+cidr_subnet_cms_outbound   = ["10.0.2.0/24"]
 cidr_subnet_public         = ["10.0.3.0/24"]
 cidr_subnet_azdoa          = ["10.0.5.0/24"]
 

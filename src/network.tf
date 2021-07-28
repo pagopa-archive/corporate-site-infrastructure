@@ -24,16 +24,15 @@ module "subnet_db" {
   enforce_private_link_endpoint_network_policies = true
 }
 
-module "subnet_cms" {
+module "subnet_cms_outbound" {
   source               = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
-  name                 = format("%s-cms-subnet", local.project)
-  address_prefixes     = var.cidr_subnet_cms
+  name                 = format("%s-cms-subnet-outbound", local.project)
+  address_prefixes     = var.cidr_subnet_cms_outbound
   resource_group_name  = azurerm_resource_group.rg_vnet.name
   virtual_network_name = azurerm_virtual_network.vnet.name
 
   delegation = {
-    name = "default"
-
+    name = "Microsoft.Web.serverFarms"
     service_delegation = {
       name    = "Microsoft.Web/serverFarms"
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
@@ -41,15 +40,15 @@ module "subnet_cms" {
   }
 
   service_endpoints = [
+    "Microsoft.Storage",
     "Microsoft.Web",
-    "Microsoft.Storage"
   ]
 }
 
-module "subnet_cms_private" {
+module "subnet_cms_inbound" {
   source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.7"
-  name                                           = format("%s-cms-private-subnet", local.project)
-  address_prefixes                               = var.cidr_subnet_cms_private
+  name                                           = format("%s-cms-subnet-inbound", local.project)
+  address_prefixes                               = var.cidr_subnet_cms_inbound
   resource_group_name                            = azurerm_resource_group.rg_vnet.name
   virtual_network_name                           = azurerm_virtual_network.vnet.name
   service_endpoints                              = ["Microsoft.Web"]
