@@ -84,6 +84,24 @@ module "cdn_portal_frontend" {
 
   }]
 
+  # add rules
+  # app-data.json -> cache-control: public, max-age=0, must-revalidate
+  # page-data.json -> cache-control: public, max-age=0, must-revalidate
+  # HTML files -> cache-control: public, max-age=0, must-revalidate
+  # static/ -> cache-control: public, max-age=31536000, immutable
+  # js, css -> cache-control: public, max-age=31536000, immutable
+  delivery_rule_url_path_condition_cache_expiration_action = [{
+    name            = "AppDataCache"
+    order           = 3
+    operator        = "EndsWith"
+    match_values    = ["/app-data.json", "/page-data.json"]
+    behavior        = "BypassCache"
+    duration        = null
+    response_action = "Overwrite"
+    response_name   = "cache-control"
+    response_value  = "public, max-age=0, must-revalidate"
+  }]
+
   tags = var.tags
 }
 

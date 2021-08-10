@@ -65,12 +65,15 @@ variable "global_delivery_rule" {
 
 variable "delivery_rule_url_path_condition_cache_expiration_action" {
   type = list(object({
-    name         = string
-    order        = number
-    operator     = string
-    match_values = list(string)
-    behavior     = string
-    duration     = string
+    name            = string
+    order           = number
+    operator        = string
+    match_values    = list(string)
+    behavior        = string
+    duration        = string
+    response_action = string
+    response_name   = string
+    response_value  = string
   }))
   default = []
 }

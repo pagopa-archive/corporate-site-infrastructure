@@ -64,6 +64,11 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
         behavior = delivery_rule.value.behavior
         duration = delivery_rule.value.duration
       }
+      modify_response_header_action {
+        action = delivery_rule.value.response_action
+        name   = delivery_rule.value.response_name
+        value  = delivery_rule.value.response_value
+      }
     }
   }
 
